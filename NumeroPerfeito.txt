@@ -1,0 +1,156 @@
+﻿; 45 % 4 = 1
+;1 --> algoritmo 2;
+
+
+;2.Dado um número em uma posição de memória verifique se este é um 
+;número perfeito. Imprima “verdadeiro” ou “falso” na saída.
+
+
+	JMP MAIN 
+resultado: DB 0 ; para guardar o resto da divisao
+mat: DB 45; numero de exemplo
+
+;variaveis para o algoritmo2
+
+numero: DB 28 ; numero para testar o programa
+soma_div: DB 0 ; para guardar a soma dos divisores de um numero
+cont: DB 1 ; contador
+modulo_1: DB 0; guarda o modulo da divisao
+
+
+MAIN:
+	MOV A, [mat] ; armazena o valor 45
+	MOV B, A ; cópia da mat para o B
+	MOV D, 0; armazena o modulo da divisao
+	
+		
+LOOP:
+    	CMP B, 4   ; Compara o numero com o divisor
+    	JB IFF    ; Se o numero for menor que o divisor, termina o 
+
+loop
+    	SUB B, 4   ; Subtrai o divisor do numero
+    	JMP LOOP
+
+; Neste ponto, B conterá o valor do módulo (resto da divisão) de 
+
+mat por 4
+
+IFF:
+	MOV D, B
+	MOV [resultado], D
+	CMP D, 1 ; compara se o resto da divisao for igual a 1
+	JE algoritmo2 ; se sim, vai pra funcão algoritmo2
+	JMP FORA ; Se nao entrar, finalizar o programa
+	
+	
+	
+algoritmo2:
+	;2.Dado um número em uma posição de memória verifique se 
+
+este é um 
+	;número perfeito. Imprima “verdadeiro” ou “falso” na saída.
+	;OBS: 6 e 28 são numeros perfeitos entre 1 e 255
+		
+	MOV A, [numero] ; A <-- (numero)
+	MOV B, [cont] ; B <-- (cont)
+	MOV C, [numero]; cópia do numero original
+		
+	DIV 2; A = A / 2
+		
+;for
+LOOP_1:
+	MOV C, [numero]; cópia do numero original
+	MOV [cont], B  ; Atualize o valor de B na memória antes da 
+
+comparação
+	CMP B, A       ; Compara o contador B com o número A 
+
+modificado (A = A / 2)
+	JA FORA_LOOP  ; Se B for maior que A, termine o loop
+
+;loop para descobrir o resto da divisao do numero
+	
+LOOP_2:
+	MOV D, B; contador passa para o reg D
+	CMP C, D; compara o numero A original com o divisor D 
+
+(contador) // cont <= numero
+	JB IFF_1; Se o numero for menor que o divisor, termina o 
+
+loop
+	SUB C, D; Subtrai o divisor do numero
+	JMP LOOP_2
+		
+;Neste ponto, C conterá o valor do módulo (resto da divisão) de 
+
+numero por cont
+
+;if
+IFF_1:
+	MOV D, C
+	MOV [modulo_1], D
+	INC B; Incrementa o contador B
+	CMP C, 0 ; compara se o resto da divisao for igual a 0
+	JE soma_divisores ; se sim, vai pra funcão soma_divisores
+	JMP LOOP_1; se não, volta pro laço for
+		
+soma_divisores:
+	MOV D, [soma_div] ; soma_div += cont;
+	ADD D, [cont]
+	MOV [soma_div], D
+	JMP LOOP_1	; volta pro laço for
+		
+		
+;quando sair fora do loop			
+FORA_LOOP:
+	MOV A, [soma_div]
+	MOV B, [numero]
+	CMP A, B ; compara soma_div com numero
+	JE imprime_verdadeiro ; se igual imprime o verdadeiro
+	JMP imprime_falso; senão imprime o falso
+		
+		
+;imprimir o verdadeiro
+imprime_verdadeiro:
+	MOV C, 'v'
+    	MOV [232], C
+    	MOV C, 'e'
+    	MOV [233], C
+    	MOV C, 'r'
+    	MOV [234], C
+    	MOV C, 'd'
+    	MOV [235], C
+    	MOV C, 'a'
+    	MOV [236], C
+    	MOV C, 'd'
+    	MOV [237], C
+    	MOV C, 'e'
+    	MOV [238], C
+    	MOV C, 'i'
+    	MOV [239], C
+    	MOV C, 'r'
+    	MOV [240], C
+    	MOV C, 'o'
+    	MOV [241], C
+    	HLT             
+		
+		
+;imprimir o falso
+imprime_falso:
+	MOV C, 'f'
+    	MOV [232], C
+    	MOV C, 'a'
+    	MOV [233], C
+    	MOV C, 'l'
+    	MOV [234], C
+    	MOV C, 's'
+    	MOV [235], C
+    	MOV C, 'o'
+	MOV [236], C		
+	HLT
+
+; Finaliza o programa caso necessário
+		
+FORA:
+	HLT

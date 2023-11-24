@@ -1,0 +1,77 @@
+;Dado um número r na memória, calcule a área do círculo (A = π*r²) ;formado com raio r e imprima o valor na saída. Caso o cálculo ;implique em overflow, imprima "overflow".
+
+JMP start
+r: DB 9 ; raio do circulo
+pi: DB 3 ; equivalente ao valor pi
+area: DB 0 ; variavel que guarda a area do circulo
+overflow: DB "overflow" ; para imprimir o overflow
+
+start:
+	MOV A, [r]
+	MOV B, [r]
+	MUL B
+	MOV B, [pi]
+	MUL B
+	;MOV [area], A
+	JC print_overflow
+	
+
+	; Agora, vamos imprimir a área calculada
+
+    	;MOV C, [area] ; Point to var
+    	;MOV D, 232 ; Point to output
+    	CALL print2
+
+    	HLT ; Stop execution
+
+print2:
+	MOV [area], A; Valor final de A
+	MOV C, [area] ; numero 243 que vai pra impressão
+	MOV A, C
+	DIV 100
+	MOV C, A
+	ADD A, 48
+	MOV [232], A ; endereço 1
+	MOV A, C
+	MUL 100
+
+
+	MOV D, A
+	MOV A, [area]
+	SUB A, D
+	MOV C, A
+	DIV 10
+
+	MOV D, A
+
+	ADD A, 48
+	MOV [233], A ; endereço 2
+
+	MOV A, D
+	MUL 10
+	SUB C, A
+	ADD C, 48
+	MOV [234], C ; endereço 3
+	HLT
+
+print_overflow:
+	MOV C, overflow ; Point to var 
+	MOV D, 232	; Point to output
+	CALL print
+        HLT             ; Stop execution
+
+print:			; print(C:*from, D:*to)
+	PUSH A
+	PUSH B
+	MOV B, 0
+.loop:
+	MOV A, [C]	; Get char from var
+	MOV [D], A	; Write to output
+	INC C
+	INC D  
+	CMP B, [C]	; Check if end
+	JNZ .loop	; jump if not
+
+	POP B
+	POP A
+	RET
